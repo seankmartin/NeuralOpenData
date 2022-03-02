@@ -20,30 +20,32 @@ Check [my website](https://seankmartin.netlify.app/python/getting-your-code-out-
 
 ## Installation
 
-Currently seems docker is best. Working on it at the moment:
+Possibly could include docker later, there are some examples on Allensdk. Probably best to install on my laptop in this way.
+
+Anyway, for non docker. You need Python 3.7 or 3.8. Then
 
 ```
-docker pull alleninstitute/allensdk
-docker run -i -t -p 8888:8888 alleninstitute/allensdk /bin/bash
-cd allensdk
-make test
-cd allensdk/doc_template/examples_root/examples/nb
-jupyter notebook --ip=* --no-browser --allow-root
+pip install allensdk
+pip install simuran
 ```
 
-See [my website](https://seankmartin.netlify.app/computing/using-docker/)
+See [my website](https://seankmartin.netlify.app/computing/using-docker/) for more information on docker
 
 ## Dependencies
-List what installation requires.
+
+See `requirements.txt`
 
 ## Documentation
-Link to where can further documentation be found.
+
+Later on read the docs.
 
 ## Contributing
-Show the guide for contributing.
+
+Welcome.
 
 ## Licensing
-What License the project is provided under.
+
+MIT - see license file.
 
 ## Allen
 
