@@ -12,12 +12,17 @@ import pandas as pd
 def main():
     data_directory = Path(r"D:\AllenBrainObservatory\ephys_data")
     manifest_path = data_directory / "manifest.json"
-    cache = EcephysProjectCache.from_warehouse(manifest=manifest_path)
+    cache = EcephysProjectCache.from_warehouse(
+        manifest=manifest_path,
+        fetch_tries=1,
+        timeout=20000
+        )
 
     explore_data_structure(cache)
     explore_unit_structure(cache)
+    example_data_access(cache)
 
-    download_ecephys_data(cache, data_directory, get_lfp=False)
+    # download_ecephys_data(cache, data_directory, get_lfp=False)
 
 
 def explore_data_structure(cache: Type[EcephysProjectCache]):
@@ -83,8 +88,8 @@ def explore_unit_structure(cache: Type[EcephysProjectCache]):
     print(str(len(all_metrics)) + " units overall")
 
 
-def example_data_access(cache: Type[EcephysProjectCache]):
-    filtered_sessions = example_filtering()
+def example_data_access(cache: Type[EcephysProjectCache], get_lfp: bool = True):
+    filtered_sessions = example_filtering(cache)
     session = cache.get_session_data(
         filtered_sessions.index.values[0],
         isi_violations_maximum=np.inf,
@@ -98,8 +103,9 @@ def example_data_access(cache: Type[EcephysProjectCache]):
 
     probe_id = session.probes.index.values[0]
 
-    lfp = session.get_lfp(probe_id)
-    print(lfp)
+    if get_lfp:
+        lfp = session.get_lfp(probe_id)
+        print(lfp)
 
 
 def example_filtering(cache: Type[EcephysProjectCache]):
