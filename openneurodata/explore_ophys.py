@@ -19,24 +19,21 @@ cache = VisualBehaviorOphysProjectCache.from_s3_cache(cache_dir=data_storage_dir
 # saved relative to your working directory.  It can also be an absolute path.
 
 behavior_sessions = cache.get_behavior_session_table()
-
-print(f"Total number of behavior sessions: {len(behavior_sessions)}")
-
-behavior_sessions.head()
-
 behavior_ophys_sessions = cache.get_ophys_session_table()
-
-print(f"Total number of behavior + ophys sessions: {len(behavior_ophys_sessions)}")
-
-behavior_ophys_sessions.head()
-
-# Download data like this
-behavior_session = cache.get_behavior_session(behavior_session_id=870987812)
-print(behavior_session.list_data_attributes_and_methods())
 behavior_ophys_experiments = cache.get_ophys_experiment_table()
 
+print(f"Total number of behavior sessions: {len(behavior_sessions)}")
+print(f"Total number of behavior + ophys sessions: {len(behavior_ophys_sessions)}")
+
+# behavior_sessions.head()
+# behavior_ophys_sessions.head()
+
+# Download data like this
+# behavior_session = cache.get_behavior_session(behavior_session_id=870987812)
+# print(behavior_session.list_data_attributes_and_methods())
+
 # And ophys data like this
-ophys_experiment = cache.get_behavior_ophys_experiment(ophys_experiment_id=951980471)
+# ophys_experiment = cache.get_behavior_ophys_experiment(ophys_experiment_id=951980471)
 
 # Can iterate over ophys data here to keep downloading
 for ophys_experiment_id, _ in behavior_ophys_experiments.iterrows():

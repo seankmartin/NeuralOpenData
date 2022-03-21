@@ -13,16 +13,14 @@ def main():
     data_directory = Path(r"D:\AllenBrainObservatory\ephys_data")
     manifest_path = data_directory / "manifest.json"
     cache = EcephysProjectCache.from_warehouse(
-        manifest=manifest_path,
-        fetch_tries=1,
-        timeout=20000
-        )
+        manifest=manifest_path, fetch_tries=1, timeout=20000
+    )
 
     explore_data_structure(cache)
     explore_unit_structure(cache)
     example_data_access(cache)
 
-    # download_ecephys_data(cache, data_directory, get_lfp=False)
+    download_ecephys_data(cache, data_directory, get_lfp=False)
 
 
 def explore_data_structure(cache: Type[EcephysProjectCache]):
@@ -111,9 +109,7 @@ def example_data_access(cache: Type[EcephysProjectCache], get_lfp: bool = True):
 def example_filtering(cache: Type[EcephysProjectCache]):
     sessions = cache.get_session_table()
     filtered_sessions = sessions[
-        (sessions.sex == "M")
-        & (sessions.full_genotype.str.find("Sst") > -1)
-        & (sessions.session_type == "brain_observatory_1.1")
+        (sessions.session_type == "functional_connectivity")
         & (["VISl" in acronyms for acronyms in sessions.ecephys_structure_acronyms])
     ]
     return filtered_sessions
@@ -123,7 +119,7 @@ def download_ecephys_data(
     cache: Type[EcephysProjectCache], data_directory: Type[Path], get_lfp: bool = False
 ):
     ## Download all of the data
-    sessions = cache.get_session_table()
+    sessions = example_filtering(cache)
     for session_id, row in sessions.iterrows():
 
         truncated_file = True
