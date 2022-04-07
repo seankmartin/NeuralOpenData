@@ -110,7 +110,7 @@ def example_filtering(cache: Type[EcephysProjectCache]):
     sessions = cache.get_session_table()
     filtered_sessions = sessions[
         (sessions.session_type == "functional_connectivity")
-        & (["VISl" in acronyms for acronyms in sessions.ecephys_structure_acronyms])
+        # & (["VISl" in acronyms for acronyms in sessions.ecephys_structure_acronyms])
     ]
     return filtered_sessions
 
