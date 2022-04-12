@@ -45,9 +45,8 @@ print(f"Total number of behavior + ophys sessions: {len(behavior_ophys_sessions)
 # Filtering out only the 2P imaging, which is in VISp and VISl
 
 # Let us visualise this
-dtale.show(behavior_ophys_experiments).open_browser()
-
-inp = input("Press Enter to continue after viewing dtale...")
+# dtale.show(behavior_ophys_experiments).open_browser()
+# inp = input("Press Enter to continue after viewing dtale...")
 
 # See imaging_depth and targeted_structure
 
@@ -62,9 +61,8 @@ genotype_filter = (
 
 filtered_experiments = behavior_ophys_experiments[project_filter & genotype_filter]
 
-dtale.show(filtered_experiments).open_browser()
-
-inp = input("Press Enter to continue after viewing dtale...")
+# dtale.show(filtered_experiments).open_browser()
+# inp = input("Press Enter to continue after viewing dtale...")
 
 # grab the containers from this
 ophys_container_ids = filtered_experiments.ophys_container_id.unique()
@@ -78,9 +76,21 @@ for container_id in ophys_container_ids:
         print(sst_container_experiments)
         fig, ax = plt.subplots(1, len(sst_container_experiments), figsize=(20, 5))
         for i, (experiment_id, _) in enumerate(sst_container_experiments.iterrows()):
-            dataset = cache.get_behavior_ophys_experiment(
-                ophys_experiment_id=experiment_id
-            )
+            try:
+                dataset = cache.get_behavior_ophys_experiment(
+                    ophys_experiment_id=experiment_id
+                )
+            except OSError:
+                path_to_file = (
+                    data_storage_directory
+                    / "visual-behavior-ophys-1.0.1"
+                    / "behavior_ophys_experiments"
+                    / f"behavior_ophys_experiment_{experiment_id}.nwb"
+                )
+                print("Error opening {}, redownloading...".format(path_to_file))
+                path_to_file.unlink()
+                dataset = cache.get_behavior_ophys_experiment(
+                    ophys_experiment_id=experiment_id)
             ax[i].imshow(dataset.max_projection.data, cmap="gray")
             ax[i].set_title(experiment_id)
         fig.savefig(here / "figures" / f"{container_id}_mip.png", dpi=400)
