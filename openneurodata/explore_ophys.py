@@ -1,5 +1,6 @@
 from pathlib import Path
 import pprint
+import psutil
 
 # Can also directly instantiate a BehaviorOphysExperiment
 from allensdk.brain_observatory.behavior.behavior_ophys_experiment import (
@@ -75,6 +76,7 @@ for container_id in ophys_container_ids:
     if len(sst_container_experiments) >= 5:
         print(sst_container_experiments)
         fig, ax = plt.subplots(1, len(sst_container_experiments), figsize=(20, 5))
+        print("RAM memory usage out", psutil.virtual_memory())
         for i, (experiment_id, _) in enumerate(sst_container_experiments.iterrows()):
             try:
                 dataset = cache.get_behavior_ophys_experiment(
@@ -90,9 +92,17 @@ for container_id in ophys_container_ids:
                 print("Error opening {}, redownloading...".format(path_to_file))
                 path_to_file.unlink()
                 dataset = cache.get_behavior_ophys_experiment(
-                    ophys_experiment_id=experiment_id)
+                    ophys_experiment_id=experiment_id
+                )
+            print("RAM memory usage in loop", psutil.virtual_memory())
             ax[i].imshow(dataset.max_projection.data, cmap="gray")
             ax[i].set_title(experiment_id)
+            # print("Current cache size:")
+            # print(cache.get_behavior_ophys_experiment.cache_size())
+            # Clear the cache from the session object
+            # behav_sess.cache_clear()
+            # print("Cache size after clearing: ")
+            # print(behav_sess.api.get_driver_line.cache_size())
         fig.savefig(here / "figures" / f"{container_id}_mip.png", dpi=400)
         plt.close(fig)
 
