@@ -11,5 +11,7 @@ def summarise_single_session(allen_dataset):
         f"\tThere are {len(cell_specimen_table)} cells"
         f"in this session with IDS {cell_specimen_table['cell_specimen_id']}"
     )
+    methods = allen_dataset.list_data_attributes_and_methods()
+    print(f"The available information is {methods}")
 
-    ## Plotting the
+    ## Plotting other information
