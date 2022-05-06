@@ -1,9 +1,9 @@
-from pathlib import Path
 import shutil
+from pathlib import Path
 
-from allensdk.brain_observatory.ecephys.ecephys_project_cache import EcephysProjectCache
 import numpy as np
 import pandas as pd
+from allensdk.brain_observatory.ecephys.ecephys_project_cache import EcephysProjectCache
 
 data_directory = Path(r"D:\AllenBrainObservatory\ephys_data")
 
@@ -12,6 +12,10 @@ manifest_path = data_directory / "manifest.json"
 cache = EcephysProjectCache.from_warehouse(manifest=manifest_path)
 
 sessions = cache.get_session_table()
+arr = np.concatenate(list(sessions["ecephys_structure_acronyms"]))
+good_vals = np.array([v for v in arr if str(v) != "nan"])
+un = np.unique(good_vals)
+print(un)
 
 print("Total number of sessions: " + str(len(sessions)))
 

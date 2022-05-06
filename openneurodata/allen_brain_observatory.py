@@ -1,12 +1,12 @@
 """Dealing with the allensdk to access allen brain data."""
 
-from pathlib import Path
 import shutil
+from pathlib import Path
 from typing import Type
 
-from allensdk.brain_observatory.ecephys.ecephys_project_cache import EcephysProjectCache
 import numpy as np
 import pandas as pd
+from allensdk.brain_observatory.ecephys.ecephys_project_cache import EcephysProjectCache
 
 
 def main():
@@ -16,9 +16,9 @@ def main():
         manifest=manifest_path, fetch_tries=1, timeout=20000
     )
 
-    explore_data_structure(cache)
-    explore_unit_structure(cache)
-    example_data_access(cache)
+    # explore_data_structure(cache)
+    # explore_unit_structure(cache)
+    # example_data_access(cache)
 
     download_ecephys_data(cache, data_directory, get_lfp=False)
 
@@ -110,7 +110,7 @@ def example_filtering(cache: Type[EcephysProjectCache]):
     sessions = cache.get_session_table()
     filtered_sessions = sessions[
         (sessions.session_type == "functional_connectivity")
-        # & (["VISl" in acronyms for acronyms in sessions.ecephys_structure_acronyms])
+        & (["VISp" in acronyms for acronyms in sessions.ecephys_structure_acronyms])
     ]
     return filtered_sessions
 
