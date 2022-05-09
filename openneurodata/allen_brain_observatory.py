@@ -20,7 +20,7 @@ def main():
     # explore_unit_structure(cache)
     # example_data_access(cache)
 
-    download_ecephys_data(cache, data_directory, get_lfp=False)
+    download_ecephys_data(cache, data_directory, get_lfp=True)
 
 
 def explore_data_structure(cache: Type[EcephysProjectCache]):

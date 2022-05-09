@@ -1,19 +1,17 @@
-from pathlib import Path
 import pprint
-import psutil
+from pathlib import Path
 from urllib.parse import urljoin
-from tqdm import tqdm
-import requests
 
-# Can also directly instantiate a BehaviorOphysExperiment
-from allensdk.brain_observatory.behavior.behavior_ophys_experiment import (
-    BehaviorOphysExperiment,
-)
-from allensdk.brain_observatory.behavior.behavior_project_cache import (
-    VisualBehaviorOphysProjectCache,
-)
 import dtale
 import matplotlib.pyplot as plt
+import psutil
+import requests
+# Can also directly instantiate a BehaviorOphysExperiment
+from allensdk.brain_observatory.behavior.behavior_ophys_experiment import \
+    BehaviorOphysExperiment
+from allensdk.brain_observatory.behavior.behavior_project_cache import \
+    VisualBehaviorOphysProjectCache
+from tqdm import tqdm
 
 HERE = Path(__file__).parent.absolute()
 MANIFEST_VERSION = "1.0.1"
@@ -52,6 +50,10 @@ def already_downloaded(session_id):
 
 def download_all_data(cache, ophys_container_ids, filtered_experiments, manual=False):
     # Try to download some big containers
+    # behaviour_table = cache.get_behavior_session_table(as_df=True)
+    session_table = cache.get_ophys_session_table(as_df=True)
+    experiment_table = cache.get_ophys_experiment_table(as_df=True)
+
     for container_id in ophys_container_ids:
         sst_container_experiments = filtered_experiments[
             filtered_experiments.ophys_container_id == container_id
@@ -65,14 +67,15 @@ def download_all_data(cache, ophys_container_ids, filtered_experiments, manual=F
                 sst_container_experiments.iterrows()
             ):
                 if already_downloaded(experiment_id):
-                    continue
+                    session_id = experiment_table["ophys_session_id"].loc[experiment_id]
+                    behavior_id = session_table["behavior_id"].loc[session_id]
+                    _ = cache.get_behavior_session(behavior_id)
                 if manual:
                     manual_download(experiment_id)
                 else:
                     _ = cache.get_behavior_ophys_experiment(
                         ophys_experiment_id=experiment_id
                     )
-                
 
 
 def plot_mpis(cache, ophys_container_ids, filtered_experiments):
